@@ -1,0 +1,73 @@
+# Exam
+# Import necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load the dataset from the provided Excel file
+file_path = r'C:\Users\kintzlerkh15\Desktop\Restaurant Revenue.xlsx'
+data = pd.read_excel(file_path)
+
+# Display the first few rows of the dataset to understand its structure
+print("First few rows of the dataset:")
+print(data.head())
+
+# Separate features (X) and target variable (y)
+X = data[['Number_of_Customers', 'Menu_Price', 'Marketing_Spend', 
+          'Average_Customer_Spending', 'Promotions', 'Reviews']]
+y = data['Monthly_Revenue']
+
+# Split the data into training and testing sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize Linear Regression model
+model = LinearRegression()
+
+# Train the model on the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the testing data
+y_pred = model.predict(X_test)
+
+# Calculate model performance metrics
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+# Print model performance metrics
+print("\nModel Performance Metrics:")
+print("Mean Squared Error (MSE):", mse)
+print("R-squared (R2) Score:", r2)
+
+# Provide coefficients of the features
+print("\nCoefficients of the features:")
+for i, feature in enumerate(X.columns):
+    print(feature + ':', model.coef_[i])
+
+# Explain the meaning of coefficients
+print("\nInterpretation of coefficients:")
+print("A positive coefficient indicates a positive relationship with monthly revenue.")
+print("For example, for every unit increase in 'Number_of_Customers', monthly revenue is expected to increase by the corresponding coefficient.")
+
+# Provide intercept of the model
+print("\nIntercept of the model:", model.intercept_)
+
+# Explain the meaning of intercept
+print("\nIntercept represents the expected monthly revenue when all features are zero.")
+print("It's the baseline revenue.")
+
+# Explain the model equation
+print("\nModel Equation:")
+print("Monthly Revenue =", model.intercept_, "+", 
+      "Number_of_Customers *", model.coef_[0], "+", 
+      "Menu_Price *", model.coef_[1], "+", 
+      "Marketing_Spend *", model.coef_[2], "+", 
+      "Average_Customer_Spending *", model.coef_[3], "+", 
+      "Promotions *", model.coef_[4], "+", 
+      "Reviews *", model.coef_[5])
+
+# Make predictions for a new set of features
+new_features = [[100, 20, 5000, 30, 1, 50]]  # Example values for the features
+predicted_income = model.predict(new_features)
+print("\nPredicted Monthly Income for the new set of features:", predicted_income[0])
+
